@@ -21,7 +21,40 @@ STATUS=[[1,1,1,1,1],[0,0,0,0,1],[1,1,0,1,0],[1,0,1,0,1],
 
 
 '''
-Calculate available arcs for a train
+Calculate all possible arcs , i.e. E
+'''
+def all_arcs():
+    arcs=[]
+    # from S to A
+    for i in range(RANGE[0][0],RANGE[0][1]+1):
+        arcs.append((('S',0),('A',i)))
+    # from G to T 
+    for i in range(RANGE[6][0],RANGE[6][1]+1):
+        arcs.append((('G',i),('T',0)))
+    all_pos = ['A','B1','B2','C1','C2','D1','D2','E1','E2','F1','F2','G'] # len = 12
+    for i in range(11):
+        pos=all_pos[i]
+        idx=(i+1)//2 # A is 0, B is 1 ,...
+        next_pos=all_pos[i+1]
+        if i%2==0: # cross station
+            for t in range(RANGE[idx][0],RANGE[idx][1]+1):
+                for delta_t in [RT[idx][0],RT[idx][1]]:
+                    if t+delta_t in range(RANGE[idx+1][0],RANGE[idx+1][1]+1):
+                        arcs.append(((pos,t),(next_pos,t+delta_t)))
+        else : # same station
+            # arcs represent not stopping in this station
+            for t in range(RANGE[idx][0],RANGE[idx][1]+1):
+                for delay in range(2,16):
+                    if t+delay in range(RANGE[idx][0],RANGE[idx][1]+1):
+                        arcs.append(((pos,t),(next_pos,t+delay)))
+            # arcs represent  stopping in this station
+            for t in range(RANGE[idx][0],RANGE[idx][1]+1):
+                arcs.append(((pos,t),(next_pos,t)))
+    return arcs
+
+
+'''
+Calculate available arcs for a train, i.e. E^j
 '''
 def available_arcs(idx): # has arcs related to artificial nodes
     # idx 是车辆的编号，1，2，3，4，5，6代表6个快车。其他是慢车
@@ -195,7 +228,7 @@ def model_param():
         Nv[str(node)]=conflict_node(node)
     modelparam={
         'N':Nv,
-        'nodes':nodes,
+        'nodes':nodes, 'arcs':all_arcs(),
         "0":train0,"1":train1, "2":train2,"3":train3,
         "4":train4,"5":train5, "6":train6
     }
@@ -205,7 +238,7 @@ if __name__ == '__main__':
     #Use json.dump to write data to a JSON file
     param=model_param()
     with open('data/modelparam.json', 'w') as f:
-        json.dump(param, f)
+        json.dump(param, f)    
 
 
 
