@@ -59,12 +59,12 @@ for epoch in range(total_epoch):
                 name = tuple([best_path_temp[j],best_path_temp[j+1]])
                 X[train_idx][name] = 1
     
-   
-    # if (epoch+1) >60 and use_train_num == 16:
-    #     with open(f'data/shortest_path_lagrangian_{epoch+1}.json', 'w') as f:
-    #         json.dump(path, f)
-    #     with open(f'data/shortest_path_lagrangian_{epoch+1}_multiplier.json', 'w') as f:
-    #         json.dump(lagrangian_multiplier, f)
+   # 保存60步后使用了16辆车的解（解肯定为无效解）
+    if (epoch+1) >60 and use_train_num == 16:
+        with open(f'data/shortest_path_lagrangian_{epoch+1}.json', 'w') as f:
+            json.dump(path, f)
+        with open(f'data/shortest_path_lagrangian_{epoch+1}_multiplier.json', 'w') as f:
+            json.dump(lagrangian_multiplier, f)
 
     # 更新乘子，判断解是否有效，计算上界
     valid_flag = 1
@@ -92,7 +92,7 @@ for epoch in range(total_epoch):
 
     print(f'epoch: {epoch+1} target value: {final_value:.2f} valid: {valid_flag} use train number:{use_train_num}')
 end_time = time.time()
-cost_time = time.time()
+cost_time = end_time-start_time
 print(cost_time)
 
     #   break
