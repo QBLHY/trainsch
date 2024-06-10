@@ -22,37 +22,37 @@ with open(f'./data/shortest_path_lagrangian_74_multiplier.json', 'r') as f:
 with open(f'./data/shortest_path_change.json', 'r') as f:
     sol_arcs = json.load(f)
 
-# dual_value = {}
-# for train_idx in range(1,num_train+1):
-#     path = sol_arcs[str(train_idx)]
+dual_value = {}
+for train_idx in range(1,num_train+1):
+    path = sol_arcs[str(train_idx)]
 
-#     # 获得对应节点和边
-#     edge_name = E[train_idx]
-#     vertex_name = V[train_idx]
+    # 获得对应节点和边
+    edge_name = E[train_idx]
+    vertex_name = V[train_idx]
 
-#     value_edge = {}
-#     for name in edge_name:
-#         weight_sum = 0
-#         if name[1][0] != 'T' and name[1] in V[train_idx]:
-#             Neighbor = N[str(name[1])]
-#             for n in Neighbor:
-#                 weight_sum += lagrangian_multiplier[str(n)]
-#             if name[0][0] != 'S':
-#                 value_edge[name] = -weight_sum
-#             else:
-#                 value_edge[name] = 1
-#     dual = 0
-#     for j in range(len(path)-1):
-#         name = tuple([tuple(path[j]),tuple(path[j+1])])
-#         dual += value_edge[name]
-#     dual_value[str(train_idx)]=dual
+    value_edge = {}
+    for name in edge_name:
+        weight_sum = 0
+        if name[1][0] != 'T' and name[1] in V[train_idx]:
+            Neighbor = N[str(name[1])]
+            for n in Neighbor:
+                weight_sum += lagrangian_multiplier[str(n)]
+            if name[0][0] != 'S':
+                value_edge[name] = -weight_sum
+            else:
+                value_edge[name] = 1
+    dual = 0
+    for j in range(len(path)-1):
+        name = tuple([tuple(path[j]),tuple(path[j+1])])
+        dual += value_edge[name]
+    dual_value[str(train_idx)]=dual
 
 
-# sorted_dual = sorted(dual_value.items(), key=lambda x: x[1],reverse=False)
+sorted_dual = sorted(dual_value.items(), key=lambda x: x[1],reverse=False)
 
-# print(sorted_dual)
-for i in [1]:
-    train_idx_replace = 1#int(sorted_dual[i][0])
+print(sorted_dual)
+for i in range(len(sorted_dual)):
+    train_idx_replace = int(sorted_dual[i][0])
     # 获得对应节点和边
     edge_name = E[train_idx_replace]
     vertex_name = V[train_idx_replace]

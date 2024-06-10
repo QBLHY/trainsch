@@ -3,6 +3,7 @@ import json
 from bellman_ford_alg import bellman_ford
 import copy
 import random
+import time
 
 RANGE=[(0,99),(9,108),(9,108),(27,126),(27,126),(39,138),(39,138),(46,145),(46,145),(53,152),(53,152),(61,160)]
 
@@ -22,7 +23,7 @@ rho = 0.95
 lagrangian_multiplier = {str(name): random.uniform(0.01,0.2) for name in V[1]}
 total_epoch = 80
 
-
+start_time = time.time()
 for epoch in range(total_epoch):
     eta = eta * rho
     use_train_num = 0
@@ -59,11 +60,11 @@ for epoch in range(total_epoch):
                 X[train_idx][name] = 1
     
    
-    if (epoch+1) >60 and use_train_num == 16:
-        with open(f'data/shortest_path_lagrangian_{epoch+1}.json', 'w') as f:
-            json.dump(path, f)
-        with open(f'data/shortest_path_lagrangian_{epoch+1}_multiplier.json', 'w') as f:
-            json.dump(lagrangian_multiplier, f)
+    # if (epoch+1) >60 and use_train_num == 16:
+    #     with open(f'data/shortest_path_lagrangian_{epoch+1}.json', 'w') as f:
+    #         json.dump(path, f)
+    #     with open(f'data/shortest_path_lagrangian_{epoch+1}_multiplier.json', 'w') as f:
+    #         json.dump(lagrangian_multiplier, f)
 
     # 更新乘子，判断解是否有效，计算上界
     valid_flag = 1
@@ -90,7 +91,9 @@ for epoch in range(total_epoch):
     final_value +=  use_train_num
 
     print(f'epoch: {epoch+1} target value: {final_value:.2f} valid: {valid_flag} use train number:{use_train_num}')
-    
+end_time = time.time()
+cost_time = time.time()
+print(cost_time)
 
     #   break
         
