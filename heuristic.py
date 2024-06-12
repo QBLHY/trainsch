@@ -19,7 +19,7 @@ N=param['N']
 
 with open(f'./data/shortest_path_lagrangian_74_multiplier.json', 'r') as f:
     lagrangian_multiplier = json.load(f)
-with open(f'./data/shortest_path_change.json', 'r') as f:
+with open(f'./data/shortest_path_lagrangian_74.json', 'r') as f:
     sol_arcs = json.load(f)
 
 dual_value = {}
