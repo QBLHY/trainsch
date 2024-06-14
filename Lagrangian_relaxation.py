@@ -3,6 +3,7 @@ import json
 from bellman_ford_alg import bellman_ford
 import copy
 import random
+import time
 
 RANGE=[(0,99),(9,108),(9,108),(27,126),(27,126),(39,138),(39,138),(46,145),(46,145),(53,152),(53,152),(61,160)]
 
@@ -22,7 +23,7 @@ rho = 0.95
 lagrangian_multiplier = {str(name): random.uniform(0.01,0.2) for name in V[1]}
 total_epoch = 80
 
-
+start_time = time.time()
 for epoch in range(total_epoch):
     eta = eta * rho
     use_train_num = 0
@@ -58,7 +59,7 @@ for epoch in range(total_epoch):
                 name = tuple([best_path_temp[j],best_path_temp[j+1]])
                 X[train_idx][name] = 1
     
-   
+   # 保存60步后使用了16辆车的解（解肯定为无效解）
     if (epoch+1) >60 and use_train_num == 16:
         with open(f'data/shortest_path_lagrangian_{epoch+1}.json', 'w') as f:
             json.dump(path, f)
@@ -90,7 +91,9 @@ for epoch in range(total_epoch):
     final_value +=  use_train_num
 
     print(f'epoch: {epoch+1} target value: {final_value:.2f} valid: {valid_flag} use train number:{use_train_num}')
-    
+end_time = time.time()
+cost_time = end_time-start_time
+print(cost_time)
 
     #   break
         
