@@ -77,15 +77,18 @@ def available_arcs(idx): # has arcs related to artificial nodes
             # 从 this 到 next 
             for time in range(r[i-1][0],r[i-1][1]+1):
                 if i==6 : # F to G 
-                    arcs.append(((this+'2',time),(next,time+RT[i-1][spd])))
+                    if (next_time:=time+RT[i-1][spd]) in range(r[i][0],r[i][1]+1):
+                        arcs.append(((this+'2',time),(next,next_time)))
                 else:
-                    arcs.append(((this+'2',time),(next+'1',time+RT[i-1][spd])))
+                    if (next_time:=time+RT[i-1][spd]) in range(r[i][0],r[i][1]+1):
+                        arcs.append(((this+'2',time),(next+'1',next_time))) 
         elif i==0: # start from S
             for j in range(r[0][0],r[0][1]+1):
                 arcs.append((('S',0),('A',j)))
         elif i==1: # from A to B 
             for j in range(r[0][0],r[0][1]+1):
-                arcs.append((('A',j),('B1',j+RT[0][spd])))
+                if j+RT[0][spd] in range(r[1][0],r[1][1]+1):
+                    arcs.append((('A',j),('B1',j+RT[0][spd])))
         elif i==7: # from G to end
             for j in range(r[6][0],r[6][1]+1):
                 arcs.append((('G',j),('T',0)))
@@ -214,7 +217,7 @@ def init_train(idx):
     }
     return train
 
-def model_param():
+def model_param(): 
     train1=init_train(1)
     train2=init_train(2)
     train3=init_train(3)
@@ -232,6 +235,10 @@ def model_param():
         "0":train0,"1":train1, "2":train2,"3":train3,
         "4":train4,"5":train5, "6":train6
     }
+    pe={str(arc):0 for arc in modelparam['arcs']}
+    for t in range(100):
+        pe[str((('S',0),('A',t)))]=1 
+    modelparam['pe']=pe
     return modelparam
 
 if __name__ == '__main__':
