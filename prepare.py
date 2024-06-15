@@ -188,12 +188,12 @@ def delta(v,idx,out=True): # support artificial nodes
                 return[((last_pos,time),(pos,time))]
 
 
-def conflict_node(v):
+def conflict_node(v,r=2):
     pos, time = v
     if pos in {'S', 'T'}:
         return []
     index = ord(pos[0]) - 65 # index of this station, 'B' is 1
-    conflict = [(pos, t+time) for t in range(-2, 3) if t+time in range(RANGE[index][0], RANGE[index][1]+1)]
+    conflict = [(pos, t+time) for t in range(-r, r+1) if t+time in range(RANGE[index][0], RANGE[index][1]+1)]
     return conflict
 
 def init_train(idx):
@@ -235,9 +235,16 @@ def model_param():
         "0":train0,"1":train1, "2":train2,"3":train3,
         "4":train4,"5":train5, "6":train6
     }
-    pe={str(arc):0 for arc in modelparam['arcs']}
+    pe={arc:0 for arc in modelparam['arcs']}
     for t in range(100):
-        pe[str((('S',0),('A',t)))]=1 
+        pe[(('S',0),('A',t))]=1000
+    
+    
+    for arc in modelparam['arcs']:
+        s,t=arc
+        if s[0][0]==t[0][0]: # 代表停靠在同一个站
+            pe[arc]=-(t[1]-s[1]) 
+    
     modelparam['pe']=pe
     return modelparam
 
