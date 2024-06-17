@@ -217,7 +217,9 @@ def init_train(idx):
     }
     return train
 
-def model_param(): 
+def model_param(setting=2): 
+    # setting =1 : just arrange all the trains
+    # setting =2 : arrange all the trains and minimize the total stopping time
     train1=init_train(1)
     train2=init_train(2)
     train3=init_train(3)
@@ -239,11 +241,11 @@ def model_param():
     for t in range(100):
         pe[(('S',0),('A',t))]=1000
     
-    
-    for arc in modelparam['arcs']:
-        s,t=arc
-        if s[0][0]==t[0][0]: # 代表停靠在同一个站
-            pe[arc]=-(t[1]-s[1]) 
+    if setting==2:
+        for arc in modelparam['arcs']:
+            s,t=arc
+            if s[0][0]==t[0][0]: # 代表停靠在同一个站
+                pe[arc]=-(t[1]-s[1]) 
     
     modelparam['pe']=pe
     return modelparam
