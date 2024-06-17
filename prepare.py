@@ -250,11 +250,7 @@ def model_param(setting=2):
     modelparam['pe']=pe
     return modelparam
 
-if __name__ == '__main__':
-    #Use json.dump to write data to a JSON file
-    param=model_param()
-    with open('data/modelparam.json', 'w') as f:
-        json.dump(param, f)    
+  
 
 
 
