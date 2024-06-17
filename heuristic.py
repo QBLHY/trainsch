@@ -3,6 +3,7 @@ import json
 from bellman_ford_alg import bellman_ford
 import copy
 import random
+import time
 
 RANGE=[(0,99),(9,108),(9,108),(27,126),(27,126),(39,138),(39,138),(46,145),(46,145),(53,152),(53,152),(61,160)]
 
@@ -22,6 +23,7 @@ with open(f'./data/shortest_path_lagrangian_74_multiplier.json', 'r') as f:
 with open(f'./data/shortest_path_lagrangian_74.json', 'r') as f:
     sol_arcs = json.load(f)
 
+start=time.time()
 dual_value = {}
 for train_idx in range(1,num_train+1):
     path = sol_arcs[str(train_idx)]
@@ -106,6 +108,8 @@ while len(train_list)>0:
     if best_path_temp == None:
         train_list.append(train_idx_replace)
     
+end=time.time()
+print('Running time of heuristic algorithm is {:.2f}'.format(end-start))
 with open(f'./data/shortest_path_change.json', 'w') as f:
     json.dump(sol_arcs, f)
 
