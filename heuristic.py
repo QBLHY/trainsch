@@ -18,9 +18,9 @@ V={j:param[idx(j)]['nodes'] for j in range(1,num_train+1)}
 dm={j:param[idx(j)]['delta_minus'] for j in range(1,num_train+1)}
 N=param['N']
 
-with open(f'./data/shortest_path_lagrangian_74_multiplier.json', 'r') as f:
+with open(f'./data/shortest_path_lagrangian_80_multiplier.json', 'r') as f:
     lagrangian_multiplier = json.load(f)
-with open(f'./data/shortest_path_lagrangian_74.json', 'r') as f:
+with open(f'./data/shortest_path_lagrangian_80.json', 'r') as f:
     sol_arcs = json.load(f)
 
 start=time.time()
