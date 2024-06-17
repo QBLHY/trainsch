@@ -77,15 +77,18 @@ def available_arcs(idx): # has arcs related to artificial nodes
             # 从 this 到 next 
             for time in range(r[i-1][0],r[i-1][1]+1):
                 if i==6 : # F to G 
-                    arcs.append(((this+'2',time),(next,time+RT[i-1][spd])))
+                    if (next_time:=time+RT[i-1][spd]) in range(r[i][0],r[i][1]+1):
+                        arcs.append(((this+'2',time),(next,next_time)))
                 else:
-                    arcs.append(((this+'2',time),(next+'1',time+RT[i-1][spd])))
+                    if (next_time:=time+RT[i-1][spd]) in range(r[i][0],r[i][1]+1):
+                        arcs.append(((this+'2',time),(next+'1',next_time))) 
         elif i==0: # start from S
             for j in range(r[0][0],r[0][1]+1):
                 arcs.append((('S',0),('A',j)))
         elif i==1: # from A to B 
             for j in range(r[0][0],r[0][1]+1):
-                arcs.append((('A',j),('B1',j+RT[0][spd])))
+                if j+RT[0][spd] in range(r[1][0],r[1][1]+1):
+                    arcs.append((('A',j),('B1',j+RT[0][spd])))
         elif i==7: # from G to end
             for j in range(r[6][0],r[6][1]+1):
                 arcs.append((('G',j),('T',0)))
@@ -185,12 +188,12 @@ def delta(v,idx,out=True): # support artificial nodes
                 return[((last_pos,time),(pos,time))]
 
 
-def conflict_node(v):
+def conflict_node(v,r=2):
     pos, time = v
     if pos in {'S', 'T'}:
         return []
     index = ord(pos[0]) - 65 # index of this station, 'B' is 1
-    conflict = [(pos, t+time) for t in range(-2, 3) if t+time in range(RANGE[index][0], RANGE[index][1]+1)]
+    conflict = [(pos, t+time) for t in range(-r, r+1) if t+time in range(RANGE[index][0], RANGE[index][1]+1)]
     return conflict
 
 def init_train(idx):
@@ -214,7 +217,9 @@ def init_train(idx):
     }
     return train
 
-def model_param():
+def model_param(setting=2): 
+    # setting =1 : just arrange all the trains
+    # setting =2 : arrange all the trains and minimize the total stopping time
     train1=init_train(1)
     train2=init_train(2)
     train3=init_train(3)
@@ -232,13 +237,20 @@ def model_param():
         "0":train0,"1":train1, "2":train2,"3":train3,
         "4":train4,"5":train5, "6":train6
     }
+    pe={arc:0 for arc in modelparam['arcs']}
+    for t in range(100):
+        pe[(('S',0),('A',t))]=1000
+    
+    if setting==2:
+        for arc in modelparam['arcs']:
+            s,t=arc
+            if s[0][0]==t[0][0]: # 代表停靠在同一个站
+                pe[arc]=-(t[1]-s[1]) 
+    
+    modelparam['pe']=pe
     return modelparam
 
-if __name__ == '__main__':
-    #Use json.dump to write data to a JSON file
-    param=model_param()
-    with open('data/modelparam.json', 'w') as f:
-        json.dump(param, f)    
+  
 
 
 
