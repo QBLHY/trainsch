@@ -20,6 +20,7 @@ N=param['N']
 
 eta = 0.1
 rho = 0.95
+random.seed(389) # 为了能够复现代码结果，设置随机种子
 lagrangian_multiplier = {str(name): random.uniform(0.01,0.2) for name in V[1]}
 total_epoch = 80
 
@@ -93,7 +94,7 @@ for epoch in range(total_epoch):
     print(f'epoch: {epoch+1} target value: {final_value:.2f} valid: {valid_flag} use train number:{use_train_num}')
 end_time = time.time()
 cost_time = end_time-start_time
-print(cost_time)
+print("Runnning time is {:.2f}".format(cost_time))
 
     #   break
         
