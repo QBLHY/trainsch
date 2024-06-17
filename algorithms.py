@@ -1,5 +1,4 @@
 import copy
-from tqdm import tqdm
 import time 
 from prepare import conflict_node
 
@@ -162,7 +161,7 @@ def compute_y_and_Y(x, Ej, num_train, V, N,ignore=set()):
 customized augumented Lagrangian method
 '''
 
-def ALM(param,num_train=16,k_max=10,t_max=1,mu=10,alpha=10):
+def ALM(param,num_train=16,k_max=10,t_max=1,alpha=10):
     # 读取参数
     pe=param['pe']
     N=param['N']
@@ -181,7 +180,11 @@ def ALM(param,num_train=16,k_max=10,t_max=1,mu=10,alpha=10):
     x={j:{arc:0 for arc in Ej[j]} for j in range(1,num_train+1)} # 全0初始化
     x_={}
     # 开始外层循环
-    for k in tqdm(range(k_max)):
+    ALM_time=0
+    heuristic_time=0
+    for k in range(k_max):
+        print('Iteration: ',k)
+        k_start=time.time()
         # 开始内层循环
         for t in range(t_max):
             for j in range(1,num_train+1): # j is the NO of train
@@ -208,10 +211,14 @@ def ALM(param,num_train=16,k_max=10,t_max=1,mu=10,alpha=10):
         #检查BCD得到的解是否可行   
         y,Y=compute_y_and_Y(x,Ej,num_train,V,N)
         if max(Y.values())>1 : # BCD的解不可行
-            print('BCD not feasible, use heuristic!')
+            print('\t BCD not feasible, use heuristic!')
+            heuristic_begin=time.time()
             new_sol=find_feasible(param,lmd,vec_to_path(x),num_train)
+            heuristic_end=time.time()
+            heuristic_time+=heuristic_end-heuristic_begin
             x_= path_to_vec(new_sol,param)  
         else: 
+            print('\t BCD feasible!')
             x_=copy.deepcopy(x) 
         # 更新目标函数值 
         new_objval=0
@@ -221,10 +228,14 @@ def ALM(param,num_train=16,k_max=10,t_max=1,mu=10,alpha=10):
             objval=new_objval
             x_star=x_
         # update multipliers and penalty coefficients
-        print('objval:',objval)
+        print('\t objval:',objval)
         for _ in lmd.keys():
             lmd[_]=max(0,lmd[_]+alpha*(Y[_]-1))
         rho+=alpha/2*sum(max(0,value-1)**2 for value in Y.values())
+        k_end=time.time()
+        ALM_time+=k_end-k_start
+        print('\t total time: {:.3f}'.format(ALM_time))
+        print('\t heuristic time: {:.3f}'.format(heuristic_time))
     return x_star,objval
 
 
