@@ -51,8 +51,10 @@ for train_idx in range(1,num_train+1):
 sorted_dual = sorted(dual_value.items(), key=lambda x: x[1],reverse=False)
 
 print(sorted_dual)
-for i in range(len(sorted_dual)):
-    train_idx_replace = int(sorted_dual[i][0])
+
+train_list = [i[0] for i in sorted_dual]
+while len(train_list)>0:
+    train_idx_replace = int(train_list.pop(0))
     # 获得对应节点和边
     edge_name = E[train_idx_replace]
     vertex_name = V[train_idx_replace]
@@ -95,27 +97,18 @@ for i in range(len(sorted_dual)):
     
     for name in matching_edges:
         value_edge[name] = -1000 # 给冲突节点包含的边较大惩罚，相当于删去此边
-    # print(list(value_edge.items())[:100])
-    # raise
-    
-    # for j in range(1,num_train+1):
-    #     if j != train_idx_replace: # 除去现有的一列火车
-    #             path = sol_arcs[str(j)]
-    #             if path: 
-    #                 for k in range(len(path)-1):
-    #                     name = tuple([tuple(path[k]),tuple(path[k+1])])
-    #                     value_edge[name] = -1000
     
     best_path_temp = bellman_ford(edge_name=edge_name,value_edge = value_edge,value_lb=-1e8)
     sol_arcs[str(train_idx_replace)] = best_path_temp
 
     print(train_idx_replace)
-    
-    with open(f'./data/shortest_path_change.json', 'w') as f:
-        json.dump(sol_arcs, f)
 
-    # if train_idx_replace ==7:
-    #     break
+    if best_path_temp == None:
+        train_list.append(train_idx_replace)
+    
+with open(f'./data/shortest_path_change.json', 'w') as f:
+    json.dump(sol_arcs, f)
+
 
 
 

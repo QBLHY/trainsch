@@ -29,7 +29,7 @@ The solution of LP relaxation is not binary, thus is not a valid timetable, so w
 
 ### Setting 2 : arrange all trains on the schedule  with the requirement of minimizing the total stoppage time. 
 
-The usage process is identical to that of Setting 1, requiring only to replace "--setting 1" with "--setting 2" or to just omit it (as Setting 2 is the default). 
+The usage process is identical to that of Setting 1, only requiring  to replace "--setting 1" with "--setting 2" or to just omit it (as Setting 2 is the default). 
 
 ### LP relaxation of Setting 2
 ```
@@ -37,8 +37,25 @@ python gurobiLP.py --setting 2
 ```
 ## Problem 2
 
+We implement bellman-ford algorithm with `bellman_ford_alg.py`
+
 ## Problem 3
 
+First, run following code to get the approximation solution with Lagrangian relaxation method.
+```
+python Lagrangian_relaxation.py
+```
+Then use the heuristic method with the approximation solution as initial point to find the feasible solution
+```
+python heuristic.py
+```
+Now the solution is in the file `/data/shortest_path_change.json`.
+
+Then you can use:
+```
+python visual_tool/visual1.py --solution_name shortest_path_change --pic_name lagrangian_relaxation
+```
+to plot the timetable in the file `/pic/lagrangian_relaxation.png`
 
 ## Problem 4 : Augmented Lagrangian Method (ALM) For Setting 1,2
 
