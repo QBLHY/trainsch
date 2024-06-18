@@ -16,7 +16,7 @@ Now the solution is in the file `/data/gb_solution.json`.
 
 Then you can use:
 ```
-python visual_tool/visual1.py --solution_name gb_solution_1 --pic_name gb1
+python visual_tool/visual.py --solution_name gb_solution_1 --pic_name gb1
 ```
 to plot the timetable in the file `/pic/gb1.png`
 
@@ -53,7 +53,7 @@ Now the solution is in the file `/data/shortest_path_change.json`.
 
 Then you can use:
 ```
-python visual_tool/visual1.py --solution_name shortest_path_change --pic_name lagrangian_relaxation
+python visual_tool/visual.py --solution_name shortest_path_change --pic_name lagrangian_relaxation
 ```
 to plot the timetable in the file `/pic/lagrangian_relaxation.png`
 
@@ -73,7 +73,7 @@ This command will start the iteration of ALM algorithm. In setting 1, the optima
 After the execution, the solution is saved in the folder `/data`. Then you can run the following command to visualize the timetable.
 
 ```
-python visual_tool/visual1.py --solution_name alm_solution_1 --pic_name alm1
+python visual_tool/visual.py --solution_name alm_solution_1 --pic_name alm1
 ```
 
 The picture of timetable is in `/pic/alm1.png`.  
